@@ -59,16 +59,16 @@ def main(page: ft.Page):
                 self.cropValue = int(cropBag[str(self.cropLevel+1)]['value'])
                 self.cropName = cropBag[str(self.cropLevel+1)]['name']
                 self.cropText.value = f'{self.cropName}: ${self.cropValue}'
-                self.displayCrop.src = f'/assets/Crops/{str(self.cropName)}.png'
+                self.displayCrop.src = f'/images/{str(self.cropName)}.png'
                 self.cropLevel+=1
                 print(self.cropLevel)
                 self.update()
     
     currentPlayer = Player()
-    currentCrop = Crop(1, '/assets/Crops/Corn.png', 'Carrot')
+    currentCrop = Crop(1, f"/images/Carrot.png", 'Carrot')
 
     page.add(ft.Row(alignment=ft.MainAxisAlignment.CENTER, controls=[currentPlayer, ft.ElevatedButton(text='Upgrade Crop', icon=ft.icons.KEYBOARD_DOUBLE_ARROW_UP, on_click=currentCrop.cropUpdate)]),
     ft.Row(alignment=ft.MainAxisAlignment.CENTER, controls=[currentCrop]))
 
 
-ft.app(target=main)
+ft.app(target=main, assets_dir="assets")
