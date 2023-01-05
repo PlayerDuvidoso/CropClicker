@@ -1,0 +1,22 @@
+{
+  "1": {
+    "name": "Carrot",
+    "value": "1"
+  },
+  "2": {
+    "name": "Corn",
+    "value": "2"
+  },
+  "3": {
+    "name": "Potato",
+    "value": "4"
+  },
+  "4": {
+    "name": "Tomato",
+    "value": "6"
+  },
+  "5": {
+    "name": "Pepper",
+    "value": "10"
+  }
+}
