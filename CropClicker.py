@@ -80,14 +80,14 @@ def main(page: ft.Page):
 
         def build(self):
             self.nextCropName, self.nextCropPrice, self.nextCropValue, self.nextCropImage = currentCrop.getNextCrop(e=1)
-            self.nextCropInfo = ft.Text(f'{self.nextCropName}: ${self.nextCropValue}', text_align=ft.TextAlign.CENTER, width=200)
+            self.nextCropInfo = ft.Text(f'{self.nextCropName}: ${self.nextCropValue}', text_align=ft.TextAlign.CENTER, width=100)
             self.nextCropImageShop = ft.Image(src=self.nextCropImage, width=100, height=100)
             self.upgradeBtnTxt = ft.Text(f'Upgrade: ${self.nextCropPrice}', size=12, text_align=ft.TextAlign.CENTER)
-            self.upgradeBtn = ft.FilledButton(content=ft.Row(alignment=ft.MainAxisAlignment.SPACE_AROUND, controls=[self.upgradeBtnTxt]), on_click=self.upgradeClick, width=100)
+            self.upgradeBtn = ft.FilledButton(content=ft.Row(alignment=ft.MainAxisAlignment.START, controls=[self.upgradeBtnTxt]), on_click=self.upgradeClick, width=100)
             
             self.shopTitle = ft.Container(width=200, content=ft.Text('Shop', text_align=ft.TextAlign.CENTER), border_radius=5, border=ft.border.all(1, color='#06283D'))
             
-            self.cropInfo = ft.Column(width=200, controls=[self.nextCropInfo, self.nextCropImageShop, self.upgradeBtn])
+            self.cropInfo = ft.Column(alignment=ft.MainAxisAlignment.CENTER, width=100, controls=[self.nextCropInfo, self.nextCropImageShop, self.upgradeBtn])
             self.cropContainer = ft.Container(alignment=ft.alignment.center, width=200, content=self.cropInfo, border=ft.border.all(width=2), border_radius=5)
 
 
