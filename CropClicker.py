@@ -53,7 +53,7 @@ def main(page: ft.Page):
             currentPlayer.addMoney(currentCrop.cropValue)
             print(currentPlayer.getMoney())
         
-        def cropUpdate(self, e):
+        def cropUpgrade(self, e):
             with open(cropsStorage) as f:
                 cropBag = json.load(f)
                 self.cropValue = int(cropBag[str(self.cropLevel+1)]['value'])
@@ -62,13 +62,69 @@ def main(page: ft.Page):
                 self.displayCrop.src = f'/images/{str(self.cropName)}.png'
                 self.cropLevel+=1
                 print(self.cropLevel)
+                currentShop.updateShop(e=1)
                 self.update()
+        
+        def getNextCrop(self, e):
+            with open(cropsStorage) as f:
+                cropBag = json.load(f)
+                nextCropName = cropBag[str(self.cropLevel+1)]['name']
+                nextCropPrice = int(cropBag[str(self.cropLevel+1)]['price'])
+                nextCropValue = int(cropBag[str(self.cropLevel+1)]['value'])
+                nextCropImage = f'/images/{str(nextCropName)}.png'
+                return nextCropName, nextCropPrice, nextCropValue, nextCropImage
     
+    class Shop(ft.UserControl):
+        def __init__(self):
+            super().__init__()
+
+        def build(self):
+            self.nextCropName, self.nextCropPrice, self.nextCropValue, self.nextCropImage = currentCrop.getNextCrop(e=1)
+            self.nextCropInfo = ft.Text(f'{self.nextCropName}: ${self.nextCropValue}', text_align=ft.TextAlign.CENTER, width=200)
+            self.nextCropImageShop = ft.Image(src=self.nextCropImage, width=100, height=100)
+            self.upgradeBtnTxt = ft.Text(f'Upgrade: ${self.nextCropPrice}', size=12, text_align=ft.TextAlign.CENTER)
+            self.upgradeBtn = ft.FilledButton(content=ft.Row(alignment=ft.MainAxisAlignment.SPACE_AROUND, controls=[self.upgradeBtnTxt]), on_click=self.upgradeClick, width=100)
+            
+            self.shopTitle = ft.Container(width=200, content=ft.Text('Shop', text_align=ft.TextAlign.CENTER), border_radius=5, border=ft.border.all(1, color='#06283D'))
+            
+            self.cropInfo = ft.Column(width=200, controls=[self.nextCropInfo, self.nextCropImageShop, self.upgradeBtn])
+            self.cropContainer = ft.Container(alignment=ft.alignment.center, width=200, content=self.cropInfo, border=ft.border.all(width=2), border_radius=5)
+
+
+            self.displayShop = ft.Column(alignment=ft.MainAxisAlignment.CENTER, width=200, controls=[self.shopTitle, self.cropContainer])
+            return self.displayShop
+        
+        def upgradeClick(self, e):
+            if currentPlayer.getMoney() >= self.nextCropPrice:
+                currentCrop.cropUpgrade(e=1)
+                currentPlayer.delMoney(self.nextCropPrice)
+
+                self.nextCropName, self.nextCropPrice, self.nextCropValue, self.nextCropImage = currentCrop.getNextCrop(e=1)
+                self.nextCropInfo.value = f'{self.nextCropName}: ${self.nextCropValue}'
+                self.nextCropImageShop.src = self.nextCropImage
+                self.upgradeBtn.text = f'Upgrade: {self.nextCropPrice}'
+
+                self.update()
+        
+        def updateShop(self, e):
+                self.nextCropName, self.nextCropPrice, self.nextCropValue, self.nextCropImage = currentCrop.getNextCrop(e=1)
+                self.nextCropInfo.value = f'{self.nextCropName}: ${self.nextCropValue}'
+                self.nextCropImageShop.src = self.nextCropImage
+                self.upgradeBtnTxt.value = f'Upgrade: {self.nextCropPrice}'
+                self.update()
+
+                
+
+    currentShop = Shop()
     currentPlayer = Player()
     currentCrop = Crop(1, f"/images/Carrot.png", 'Carrot')
 
-    page.add(ft.Row(alignment=ft.MainAxisAlignment.CENTER, controls=[currentPlayer, ft.ElevatedButton(text='Upgrade Crop', icon=ft.icons.KEYBOARD_DOUBLE_ARROW_UP, on_click=currentCrop.cropUpdate)]),
-    ft.Row(alignment=ft.MainAxisAlignment.CENTER, controls=[currentCrop]))
+    def moneyCheat(e):
+        currentPlayer.addMoney(100)
+
+    page.add(ft.Row(alignment=ft.MainAxisAlignment.CENTER, controls=[currentPlayer, ft.ElevatedButton(text='Upgrade Crop', icon=ft.icons.KEYBOARD_DOUBLE_ARROW_UP, on_click=currentCrop.cropUpgrade), ft.ElevatedButton(text='Money Cheat', icon=ft.icons.ADD, on_click=moneyCheat)]),
+    ft.Row(alignment=ft.MainAxisAlignment.CENTER, controls=[currentCrop]),
+    ft.Row(alignment=ft.MainAxisAlignment.CENTER, controls=[currentShop]))
 
 
 ft.app(target=main, assets_dir="assets")
